@@ -13,7 +13,7 @@ SOURCE_URL = http://ftp.gnu.org/gnu/$(PACKAGE)/$(PACKAGE)-$(PACKAGE_VERSION).tar
 SOURCE_PATH = /tmp/source
 SOURCE_TARBALL = /tmp/source.tar.gz
 
-PATH_FLAGS = --prefix=/usr --sbindir=/usr/bin --sysconfdir=/etc
+PATH_FLAGS = --prefix=/usr --sbindir=/usr/bin --sysconfdir=/etc --infodir=/tmp/trash
 CONF_FLAGS = 
 CFLAGS = -static -static-libgcc -Wl,-static -lc
 
@@ -36,9 +36,11 @@ container:
 build: source
 	rm -rf $(BUILD_DIR)
 	cp -R $(SOURCE_PATH) $(BUILD_DIR)
+	sed -i '/^SUBDIRS/s/locate//' $(BUILD_DIR)/Makefile.in
 	cd $(BUILD_DIR) && CC=musl-gcc CFLAGS='$(CFLAGS)' ./configure $(PATH_FLAGS) $(CONF_FLAGS)
 	patch -p1 -d $(BUILD_DIR) < patches/fix-gnulib-freadahead.patch
 	cd $(BUILD_DIR) && make DESTDIR=$(RELEASE_DIR) install
+	rm -r $(RELEASE_DIR)/var
 	mkdir -p $(RELEASE_DIR)/usr/share/licenses/$(PACKAGE)
 	cp $(BUILD_DIR)/COPYING $(RELEASE_DIR)/usr/share/licenses/$(PACKAGE)/LICENSE
 	cd $(RELEASE_DIR) && tar -czvf $(RELEASE_FILE) *
