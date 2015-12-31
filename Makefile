@@ -9,7 +9,7 @@ PACKAGE_VERSION = $$(git --git-dir=upstream/.git describe --tags | sed 's/v//')
 PATCH_VERSION = $$(cat version)
 VERSION = $(PACKAGE_VERSION)-$(PATCH_VERSION)
 
-PATH_FLAGS = --prefix=/usr --sbindir=/usr/bin --sysconfdir=/etc --infodir=/tmp/trash
+PATH_FLAGS = --prefix=/usr --sysconfdir=/etc --infodir=/tmp/trash --libexecdir=/usr/lib
 CONF_FLAGS = 
 CFLAGS = -static -static-libgcc -Wl,-static -lc
 
@@ -33,10 +33,9 @@ build: submodule
 	cp -R .git/modules/upstream $(BUILD_DIR)/.git
 	sed -i '/worktree/d' $(BUILD_DIR)/.git/config
 	cd $(BUILD_DIR) && ./bootstrap
-	sed -i '/^SUBDIRS/s/locate//' $(BUILD_DIR)/Makefile.in
 	cd $(BUILD_DIR) && CC=musl-gcc CFLAGS='$(CFLAGS)' ./configure $(PATH_FLAGS) $(CONF_FLAGS)
 	cd $(BUILD_DIR) && make DESTDIR=$(RELEASE_DIR) install
-	rm -r $(RELEASE_DIR)/tmp
+	rm -r $(RELEASE_DIR)/tmp $(RELEASE_DIR)/var
 	mkdir -p $(RELEASE_DIR)/usr/share/licenses/$(PACKAGE)
 	cp $(BUILD_DIR)/COPYING $(RELEASE_DIR)/usr/share/licenses/$(PACKAGE)/LICENSE
 	cd $(RELEASE_DIR) && tar -czvf $(RELEASE_FILE) *
