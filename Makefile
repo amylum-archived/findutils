@@ -26,7 +26,7 @@ manual: submodule
 container:
 	./meta/launch
 
-build: submodule source
+build: submodule
 	rm -rf $(BUILD_DIR)
 	cp -R upstream $(BUILD_DIR)
 	sed -i '/^SUBDIRS/s/locate//' $(BUILD_DIR)/Makefile.in
