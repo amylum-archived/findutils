@@ -5,40 +5,32 @@ BUILD_DIR = /tmp/$(PACKAGE)-build
 RELEASE_DIR = /tmp/$(PACKAGE)-release
 RELEASE_FILE = /tmp/$(PACKAGE).tar.gz
 
-PACKAGE_VERSION =  4.6.0
+PACKAGE_VERSION = $$(git --git-dir=upstream/.git describe --tags | sed 's/v//')
 PATCH_VERSION = $$(cat version)
 VERSION = $(PACKAGE_VERSION)-$(PATCH_VERSION)
-
-SOURCE_URL = http://ftp.gnu.org/gnu/$(PACKAGE)/$(PACKAGE)-$(PACKAGE_VERSION).tar.gz
-SOURCE_PATH = /tmp/source
-SOURCE_TARBALL = /tmp/source.tar.gz
 
 PATH_FLAGS = --prefix=/usr --sbindir=/usr/bin --sysconfdir=/etc --infodir=/tmp/trash
 CONF_FLAGS = 
 CFLAGS = -static -static-libgcc -Wl,-static -lc
 
-.PHONY : default source manual container build version push local
+.PHONY : default submodule manual container build version push local
 
-default: container
+default: submodule container
 
-source:
-	rm -rf $(SOURCE_PATH) $(SOURCE_TARBALL)
-	mkdir $(SOURCE_PATH)
-	curl -sLo $(SOURCE_TARBALL) $(SOURCE_URL)
-	tar -x -C $(SOURCE_PATH) -f $(SOURCE_TARBALL) --strip-components=1
+submodule:
+	git submodule update --init
 
-manual:
+manual: submodule
 	./meta/launch /bin/bash || true
 
 container:
 	./meta/launch
 
-build: source
+build: submodule source
 	rm -rf $(BUILD_DIR)
-	cp -R $(SOURCE_PATH) $(BUILD_DIR)
+	cp -R upstream $(BUILD_DIR)
 	sed -i '/^SUBDIRS/s/locate//' $(BUILD_DIR)/Makefile.in
 	cd $(BUILD_DIR) && CC=musl-gcc CFLAGS='$(CFLAGS)' ./configure $(PATH_FLAGS) $(CONF_FLAGS)
-	patch -p1 -d $(BUILD_DIR) < patches/fix-gnulib-freadahead.patch
 	cd $(BUILD_DIR) && make DESTDIR=$(RELEASE_DIR) install
 	rm -r $(RELEASE_DIR)/tmp
 	mkdir -p $(RELEASE_DIR)/usr/share/licenses/$(PACKAGE)
