@@ -11,7 +11,7 @@ VERSION = $(PACKAGE_VERSION)-$(PATCH_VERSION)
 
 PATH_FLAGS = --prefix=/usr --sysconfdir=/etc --infodir=/tmp/trash --libexecdir=/usr/lib
 CONF_FLAGS = 
-CFLAGS = -static -static-libgcc -Wl,-static -lc
+CFLAGS =
 
 .PHONY : default submodule manual container build version push local
 
