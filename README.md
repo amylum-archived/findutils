@@ -1,6 +1,8 @@
 findutils
 ==========
 
+[![Build Status](https://img.shields.io/circleci/project/amylum/findutils.svg)](https://circleci.com/gh/amylum/findutils)
+[![GitHub release](https://img.shields.io/github/release/amylum/findutils.svg)](https://github.com/amylum/findutils/releases)
 [![GPL3 Licensed](http://img.shields.io/badge/license-GPL3-green.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3))
 
 Package repo for [findutils](http://www.gnu.org/software/findutils/)

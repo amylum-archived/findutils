@@ -1,0 +1,23 @@
+name 'findutils'
+org 'amylum'
+
+licenses 'COPYING'
+
+configure_flags(
+  prefix: '/usr',
+  sysconfdir: '/etc/ssh',
+  libexecdir: '/usr/lib',
+)
+
+harden
+
+build do
+  run './bootstrap'
+  configure
+  make
+  install
+end
+
+test do
+  run 'find --version'
+end
