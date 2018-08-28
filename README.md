@@ -1,7 +1,7 @@
 findutils
 ==========
 
-[![Build Status](https://img.shields.io/circleci/project/amylum/findutils/master.svg)](https://circleci.com/gh/amylum/findutils)
+[![Build Status](https://img.shields.io/travis/com/amylum/findutils.svg)](https://travis-ci.com/amylum/findutils)
 [![GitHub release](https://img.shields.io/github/release/amylum/findutils.svg)](https://github.com/amylum/findutils/releases)
 [![GPL3 Licensed](http://img.shields.io/badge/license-GPL3-green.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3))
 
